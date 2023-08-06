@@ -1,3 +1,5 @@
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -6,6 +8,7 @@ from tasks.models import Task, Tag
 
 class TaskListView(generic.ListView):
     model = Task
+    template_name = "tasks/task_list.html"
 
 
 class TaskCreateView(generic.CreateView):
@@ -47,3 +50,10 @@ class TagDeleteView(generic.DeleteView):
     model = Tag
     # template_name = "tag_confirm_delete.html"
     success_url = reverse_lazy("tasks:tag-list")
+
+
+def toggle_task(request, pk):
+    task = get_object_or_404(Task, id=pk)
+    task.is_done = not task.is_done
+    task.save()
+    return redirect("tasks:task-list")
