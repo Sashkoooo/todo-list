@@ -27,6 +27,15 @@ class TaskDeleteView(generic.DeleteView):
     success_url = reverse_lazy("tasks:task-list")
 
 
+class TaskToggleView(generic.View):
+    @staticmethod
+    def get(request, pk):
+        task = get_object_or_404(Task, id=pk)
+        task.is_done = not task.is_done
+        task.save()
+        return redirect("tasks:task-list")
+
+
 class TagListView(generic.ListView):
     model = Tag
 
@@ -46,10 +55,3 @@ class TagUpdateView(generic.UpdateView):
 class TagDeleteView(generic.DeleteView):
     model = Tag
     success_url = reverse_lazy("tasks:tag-list")
-
-
-def toggle_task(request, pk):
-    task = get_object_or_404(Task, id=pk)
-    task.is_done = not task.is_done
-    task.save()
-    return redirect("tasks:task-list")
